@@ -1,0 +1,17 @@
+jfoster@GAMING:~$ cat lighttpd-docker/Dockerfile
+FROM alpine:latest
+
+RUN apk update \
+    && apk add lighttpd \
+    && rm -rf /var/cache/apk/*
+
+CMD ["lighttpd", "-D", "-f", "/etc/lighttpd/lighttpd.conf"]
+
+
+
+mkdir lighttpd-docker
+nano lighttpd-docker/Dockerfile
+
+sudo docker build "lighttpd-docker" -t "lighttpd-docker:1.1.1"
+sudo docker run -rm -d --net=host --mount type=bind,source=/var/www/html,destination=/var/www/localhost/htdocs,readonly --name lighttpd lighttpd-docker:1.1.1
+sudo docker run -rm -d --net=host --mount type=bind,source=/piserver/samba/Storage/Video/Movies/Jurassic.Park.1993.2160p.UHD.BluRay.X265-IAMABLE,destination=/var/www/localhost/htdocs,readonly --name lighttpd lighttpd-docker:1.1.1
