@@ -1,3 +1,7 @@
+mkdir lighttpd-docker
+
+nano lighttpd-docker/Dockerfile
+#########################################################################
 jfoster@GAMING:~$ cat lighttpd-docker/Dockerfile
 FROM alpine:latest
 
@@ -6,12 +10,43 @@ RUN apk update \
     && rm -rf /var/cache/apk/*
 
 CMD ["lighttpd", "-D", "-f", "/etc/lighttpd/lighttpd.conf"]
+#########################################################################
 
+nano lighttpd-docker/lighttpd.conf
+#########################################################################
+pi@raspberrypi:~ $ cat lighttpd-docker/lighttpd.conf
+var.basedir  = "/var/www/localhost"
+var.logdir   = "/var/log/lighttpd"
+var.statedir = "/var/lib/lighttpd"
 
+server.modules = (
+    "mod_access",
+    "mod_accesslog"
+)
 
-mkdir lighttpd-docker
-nano lighttpd-docker/Dockerfile
+dir-listing.activate      = "enable"
 
-sudo docker build "lighttpd-docker" -t "lighttpd-docker:1.1.1"
-sudo docker run -rm -d --net=host --mount type=bind,source=/var/www/html,destination=/var/www/localhost/htdocs,readonly --name lighttpd lighttpd-docker:1.1.1
-sudo docker run -rm -d --net=host --mount type=bind,source=/piserver/samba/Storage/Video/Movies/Jurassic.Park.1993.2160p.UHD.BluRay.X265-IAMABLE,destination=/var/www/localhost/htdocs,readonly --name lighttpd lighttpd-docker:1.1.1
+include "mime-types.conf"
+
+server.username      = "lighttpd"
+server.groupname     = "lighttpd"
+
+server.document-root = var.basedir + "/htdocs"
+server.pid-file      = "/run/lighttpd.pid"
+
+server.errorlog      = var.logdir  + "/error.log"
+
+server.indexfiles    = ("index.php", "index.html",
+                                                "index.htm", "default.htm")
+
+server.follow-symlink = "enable"
+
+static-file.exclude-extensions = (".php", ".pl", ".cgi", ".fcgi")
+
+accesslog.filename   = var.logdir + "/access.log"
+
+url.access-deny = ("~", ".inc")
+#########################################################################
+
+docker build "lighttpd-docker" -t "lighttpd-docker:1.1.1"
+docker run --rm -d --net=host --mount type=bind,source=/piserver/samba/Storage/Video/Shows/DHMIS/,destination=/var/www/localhost/htdocs,readonly --mount type=bind,source=/home/pi/lighttpd-docker/lighttpd.conf,destination=/etc/lighttpd/lighttpd.conf --name lighttpd lighttpd-docker:1.1.1
