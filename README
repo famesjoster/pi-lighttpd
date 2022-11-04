@@ -49,4 +49,7 @@ url.access-deny = ("~", ".inc")
 #########################################################################
 
 docker build "lighttpd-docker" -t "lighttpd-docker:1.1.1"
-docker run --rm -d --net=host --mount type=bind,source=/piserver/samba/Storage/Video/Shows/DHMIS/,destination=/var/www/localhost/htdocs,readonly --mount type=bind,source=/home/pi/lighttpd-docker/lighttpd.conf,destination=/etc/lighttpd/lighttpd.conf --name lighttpd lighttpd-docker:1.1.1
+docker run --rm -d --net=host \
+--mount type=bind,source=/piserver/samba/Storage/Video/Shows/DHMIS/,destination=/var/www/localhost/htdocs,readonly \
+--mount type=bind,source=/home/pi/lighttpd-docker/lighttpd.conf,destination=/etc/lighttpd/lighttpd.conf \
+--name lighttpd lighttpd-docker:1.1.1
