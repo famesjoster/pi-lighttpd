@@ -26,7 +26,9 @@ server.modules = (
 
 dir-listing.activate      = "enable"
 
-include "mime-types.conf"
+#include "mime-types.conf"
+
+mimetype.assign      = ( ".mkv" => "video/webm", )
 
 server.username      = "lighttpd"
 server.groupname     = "lighttpd"
