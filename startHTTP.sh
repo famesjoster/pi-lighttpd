@@ -24,4 +24,4 @@ echo -e "\nChecking if the container is still running after 10 seconds..."
 sleep 10
 docker ps | grep -q lighttpd && \
         { echo "lighttpd still running, nice!"; echo -e "Stop it with 'docker stop lighttpd' whenever you want.\n"; docker ps; exit 0; } || \
-        { echo "LIGHTTPD NOT RUNNING!"; echo "YOU FUCKED SOMETHING UP!"; exit 1; }
+        { echo "LIGHTTPD NOT RUNNING!"; echo "YOU FUCKED SOMETHING UP!"; docker ps -a; exit 1; }
